@@ -1,6 +1,6 @@
 {
    "id": "obsidian-quickadd-web",
-   "name": "Obsidian Quickadd Web",
+   "name": "Quickadd Web",
    "version": "1.0.0",
    "minAppVersion": "0.15.0",
    "description": "Connects Quickadd to the Web",
