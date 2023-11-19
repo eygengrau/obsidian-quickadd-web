@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import ObsidianQuickaddWeb from 'main';
+import ObsidianQuickaddWeb from '../main';
 
 export default class QuickaddWebSettingsTab extends PluginSettingTab {
    plugin: ObsidianQuickaddWeb;

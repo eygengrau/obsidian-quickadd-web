@@ -1,6 +1,6 @@
 // https://quickadd.obsidian.guide/docs/QuickAddAPI
 
-export default interface QuickAddAPI {
+interface IQuickAddAPI {
    inputPrompt: (
       header: string,
       placeholder?: string,

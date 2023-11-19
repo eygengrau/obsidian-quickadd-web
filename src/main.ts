@@ -1,23 +1,22 @@
 import { App, Notice, Plugin } from 'obsidian';
-import QuickaddWebSettingsTab from './components/settings-tab';
-import QuickAddAPI from './definitions/quickadd-api';
-import { processUrl, GetSiteParams, Site } from 'components/process-url';
+import QuickaddWebSettingsTab from './modules/settings-tab';
+import { getSite, IGetSiteParams } from 'src/modules/get-site';
 
-interface QuickaddWebSettings {
+interface IQuickaddWebSettings {
    useReadability: boolean;
 }
 
-const DEFAULT_SETTINGS: QuickaddWebSettings = {
+const DEFAULT_SETTINGS: IQuickaddWebSettings = {
    useReadability: true,
 };
 
 export default class ObsidianQuickaddWeb extends Plugin {
-   settings: QuickaddWebSettings;
-   quickadd: QuickAddAPI;
-   processUrl: (app: App, params: GetSiteParams) => Promise<Site | null>;
+   settings: IQuickaddWebSettings;
+   quickadd: IQuickAddAPI;
+   getSite: (app: App, params: IGetSiteParams) => Promise<ISite | null>;
 
    async onload() {
-      this.processUrl = processUrl;
+      this.getSite = getSite;
       await this.loadSettings();
       this.addSettingTab(new QuickaddWebSettingsTab(this.app, this));
 
@@ -32,7 +31,7 @@ export default class ObsidianQuickaddWeb extends Plugin {
          if (params.action !== 'quickadd-web') return;
          const { url, selection } = params;
          const useReadbility = true; // get from settings!!!!
-         await processUrl(this.app, { url, selection, useReadbility });
+         await getSite(this.app, { url, selection, useReadbility });
       });
 
       // This adds a simple command that can be triggered anywhere
@@ -40,7 +39,7 @@ export default class ObsidianQuickaddWeb extends Plugin {
          id: 'quickadd-web-page',
          name: 'Create new note from URL',
          callback: () => {
-            this.processUrl(this.app, {
+            this.getSite(this.app, {
                url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/:has',
                useReadbility: true,
             });
