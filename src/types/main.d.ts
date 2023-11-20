@@ -1,3 +1,10 @@
+interface IParams {
+   choice: string;
+   url: string;
+   selection?: string;
+   useReadbility?: boolean;
+}
+
 interface ISite {
    // url of site
    url: string;
@@ -8,7 +15,7 @@ interface ISite {
    // text content of the article, with all the HTML tags removed
    textContent: string;
    // length of an article, in characters
-   length: number;
+   length: string;
    // article description, or short excerpt from the content
    excerpt: string;
    // author metadata
@@ -20,7 +27,7 @@ interface ISite {
    // content language
    lang: string;
    // published time
-   publishedTime?: string;
+   publishedTime: string;
    // markdown of content
    markdown: string;
 }

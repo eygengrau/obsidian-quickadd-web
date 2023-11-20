@@ -4,9 +4,55 @@ if you want to view the source, please visit the github repository of this plugi
 */
 
 
-// src/userscript-modules/string.ts
-var string_default = "Hello from VS Code,my dear!";
+// src/userscript-modules/obsidian.ts
+var Obsidian = class {
+  static serialize(obj, prefix) {
+    const str = [];
+    let p;
+    for (p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        const k = prefix ? prefix + "[" + p + "]" : p;
+        const v = obj[p];
+        if (v === void 0 || v === null)
+          continue;
+        str.push(
+          typeof v === "object" ? this.serialize(v, k) : encodeURIComponent(k) + "=" + encodeURIComponent(v)
+        );
+      }
+    }
+    return str.join("&");
+  }
+  static getUri(params) {
+    return this.uriStart + this.serialize(params, "");
+  }
+};
+Obsidian.uriStart = "obsidian://quickadd-web?";
+
+// src/userscript-modules/doc.ts
+var Doc = class {
+  static setCallback(params) {
+    this.callback = () => {
+      const uri = Obsidian.getUri(params);
+      console.log(uri);
+      location.href = uri;
+    };
+  }
+  static setShortcut() {
+    document.addEventListener("keydown", (event) => {
+      if (event.altKey && event.key === "\xF6")
+        this.callback();
+    });
+  }
+  static setEventListener(params) {
+    this.setCallback(params);
+    this.setShortcut();
+  }
+};
 
 // src/userscript.ts
-console.log(string_default);
-//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsic3JjL3VzZXJzY3JpcHQtbW9kdWxlcy9zdHJpbmcudHMiLCAic3JjL3VzZXJzY3JpcHQudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImV4cG9ydCBkZWZhdWx0ICdIZWxsbyBmcm9tIFZTIENvZGUsbXkgZGVhciEnO1xuIiwgImltcG9ydCBzdHIgZnJvbSAnLi91c2Vyc2NyaXB0LW1vZHVsZXMvc3RyaW5nJztcblxuY29uc29sZS5sb2coc3RyKTtcbiJdLAogICJtYXBwaW5ncyI6ICI7Ozs7Ozs7QUFBQSxJQUFPLGlCQUFROzs7QUNFZixRQUFRLElBQUksY0FBRzsiLAogICJuYW1lcyI6IFtdCn0K
+(function() {
+  "use strict";
+  const params = { choice: "", url: window.location.href };
+  Doc.setEventListener(params);
+})();
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsic3JjL3VzZXJzY3JpcHQtbW9kdWxlcy9vYnNpZGlhbi50cyIsICJzcmMvdXNlcnNjcmlwdC1tb2R1bGVzL2RvYy50cyIsICJzcmMvdXNlcnNjcmlwdC50cyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsiZXhwb3J0IGRlZmF1bHQgY2xhc3MgT2JzaWRpYW4ge1xuICAgcHJpdmF0ZSBzdGF0aWMgdXJpU3RhcnQgPSAnb2JzaWRpYW46Ly9xdWlja2FkZC13ZWI/JztcblxuICAgcHJpdmF0ZSBzdGF0aWMgc2VyaWFsaXplKG9iajogSVBhcmFtcywgcHJlZml4OiBzdHJpbmcpOiBzdHJpbmcge1xuICAgICAgY29uc3Qgc3RyID0gW107XG4gICAgICBsZXQgcDoga2V5b2YgSVBhcmFtcztcbiAgICAgIGZvciAocCBpbiBvYmopIHtcbiAgICAgICAgIGlmIChvYmouaGFzT3duUHJvcGVydHkocCkpIHtcbiAgICAgICAgICAgIGNvbnN0IGsgPSBwcmVmaXggPyBwcmVmaXggKyAnWycgKyBwICsgJ10nIDogcDtcbiAgICAgICAgICAgIGNvbnN0IHYgPSBvYmpbcF07XG4gICAgICAgICAgICBpZiAodiA9PT0gdW5kZWZpbmVkIHx8IHYgPT09IG51bGwpIGNvbnRpbnVlO1xuICAgICAgICAgICAgc3RyLnB1c2goXG4gICAgICAgICAgICAgICB0eXBlb2YgdiA9PT0gJ29iamVjdCdcbiAgICAgICAgICAgICAgICAgID8gdGhpcy5zZXJpYWxpemUodiwgaylcbiAgICAgICAgICAgICAgICAgIDogZW5jb2RlVVJJQ29tcG9uZW50KGspICsgJz0nICsgZW5jb2RlVVJJQ29tcG9uZW50KHYpXG4gICAgICAgICAgICApO1xuICAgICAgICAgfVxuICAgICAgfVxuICAgICAgcmV0dXJuIHN0ci5qb2luKCcmJyk7XG4gICB9XG5cbiAgIHB1YmxpYyBzdGF0aWMgZ2V0VXJpKHBhcmFtczogSVBhcmFtcykge1xuICAgICAgcmV0dXJuIHRoaXMudXJpU3RhcnQgKyB0aGlzLnNlcmlhbGl6ZShwYXJhbXMsICcnKTtcbiAgIH1cbn1cbiIsICJpbXBvcnQgT2JzaWRpYW4gZnJvbSAnLi9vYnNpZGlhbic7XG5cbmV4cG9ydCBkZWZhdWx0IGNsYXNzIERvYyB7XG4gICBwcml2YXRlIHN0YXRpYyBjYWxsYmFjazogKCkgPT4gdm9pZDtcblxuICAgcHJpdmF0ZSBzdGF0aWMgc2V0Q2FsbGJhY2socGFyYW1zOiBJUGFyYW1zKSB7XG4gICAgICB0aGlzLmNhbGxiYWNrID0gKCkgPT4ge1xuICAgICAgICAgY29uc3QgdXJpID0gT2JzaWRpYW4uZ2V0VXJpKHBhcmFtcyk7XG4gICAgICAgICBjb25zb2xlLmxvZyh1cmkpO1xuICAgICAgICAgbG9jYXRpb24uaHJlZiA9IHVyaTtcbiAgICAgIH07XG4gICB9XG5cbiAgIHByaXZhdGUgc3RhdGljIHNldFNob3J0Y3V0KCkge1xuICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigna2V5ZG93bicsIChldmVudDogS2V5Ym9hcmRFdmVudCkgPT4ge1xuICAgICAgICAgaWYgKGV2ZW50LmFsdEtleSAmJiBldmVudC5rZXkgPT09ICdcdTAwRjYnKSB0aGlzLmNhbGxiYWNrKCk7XG4gICAgICB9KTtcbiAgIH1cblxuICAgcHVibGljIHN0YXRpYyBzZXRFdmVudExpc3RlbmVyKHBhcmFtczogSVBhcmFtcykge1xuICAgICAgdGhpcy5zZXRDYWxsYmFjayhwYXJhbXMpO1xuICAgICAgdGhpcy5zZXRTaG9ydGN1dCgpO1xuICAgfVxufVxuIiwgImltcG9ydCBEb2MgZnJvbSAnLi91c2Vyc2NyaXB0LW1vZHVsZXMvZG9jJztcblxuKGZ1bmN0aW9uICgpIHtcbiAgICd1c2Ugc3RyaWN0JztcbiAgIGNvbnN0IHBhcmFtczogSVBhcmFtcyA9IHsgY2hvaWNlOiAnJywgdXJsOiB3aW5kb3cubG9jYXRpb24uaHJlZiB9O1xuICAgRG9jLnNldEV2ZW50TGlzdGVuZXIocGFyYW1zKTtcbn0pKCk7XG4iXSwKICAibWFwcGluZ3MiOiAiOzs7Ozs7O0FBQUEsSUFBcUIsV0FBckIsTUFBOEI7QUFBQSxFQUczQixPQUFlLFVBQVUsS0FBYyxRQUF3QjtBQUM1RCxVQUFNLE1BQU0sQ0FBQztBQUNiLFFBQUk7QUFDSixTQUFLLEtBQUssS0FBSztBQUNaLFVBQUksSUFBSSxlQUFlLENBQUMsR0FBRztBQUN4QixjQUFNLElBQUksU0FBUyxTQUFTLE1BQU0sSUFBSSxNQUFNO0FBQzVDLGNBQU0sSUFBSSxJQUFJLENBQUM7QUFDZixZQUFJLE1BQU0sVUFBYSxNQUFNO0FBQU07QUFDbkMsWUFBSTtBQUFBLFVBQ0QsT0FBTyxNQUFNLFdBQ1IsS0FBSyxVQUFVLEdBQUcsQ0FBQyxJQUNuQixtQkFBbUIsQ0FBQyxJQUFJLE1BQU0sbUJBQW1CLENBQUM7QUFBQSxRQUMxRDtBQUFBLE1BQ0g7QUFBQSxJQUNIO0FBQ0EsV0FBTyxJQUFJLEtBQUssR0FBRztBQUFBLEVBQ3RCO0FBQUEsRUFFQSxPQUFjLE9BQU8sUUFBaUI7QUFDbkMsV0FBTyxLQUFLLFdBQVcsS0FBSyxVQUFVLFFBQVEsRUFBRTtBQUFBLEVBQ25EO0FBQ0g7QUF4QnFCLFNBQ0gsV0FBVzs7O0FDQzdCLElBQXFCLE1BQXJCLE1BQXlCO0FBQUEsRUFHdEIsT0FBZSxZQUFZLFFBQWlCO0FBQ3pDLFNBQUssV0FBVyxNQUFNO0FBQ25CLFlBQU0sTUFBTSxTQUFTLE9BQU8sTUFBTTtBQUNsQyxjQUFRLElBQUksR0FBRztBQUNmLGVBQVMsT0FBTztBQUFBLElBQ25CO0FBQUEsRUFDSDtBQUFBLEVBRUEsT0FBZSxjQUFjO0FBQzFCLGFBQVMsaUJBQWlCLFdBQVcsQ0FBQyxVQUF5QjtBQUM1RCxVQUFJLE1BQU0sVUFBVSxNQUFNLFFBQVE7QUFBSyxhQUFLLFNBQVM7QUFBQSxJQUN4RCxDQUFDO0FBQUEsRUFDSjtBQUFBLEVBRUEsT0FBYyxpQkFBaUIsUUFBaUI7QUFDN0MsU0FBSyxZQUFZLE1BQU07QUFDdkIsU0FBSyxZQUFZO0FBQUEsRUFDcEI7QUFDSDs7O0NDckJDLFdBQVk7QUFDVjtBQUNBLFFBQU0sU0FBa0IsRUFBRSxRQUFRLElBQUksS0FBSyxPQUFPLFNBQVMsS0FBSztBQUNoRSxNQUFJLGlCQUFpQixNQUFNO0FBQzlCLEdBQUc7IiwKICAibmFtZXMiOiBbXQp9Cg==

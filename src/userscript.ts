@@ -1,3 +1,7 @@
-import str from './userscript-modules/string';
+import Doc from './userscript-modules/doc';
 
-console.log(str);
+(function () {
+   'use strict';
+   const params: IParams = { choice: '', url: window.location.href };
+   Doc.setEventListener(params);
+})();
